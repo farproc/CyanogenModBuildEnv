@@ -1,9 +1,8 @@
-
 # Quick Start
 
-To get and and running install vagrant and then
+To get up and running, install vagrant and then:
 
-    vagrant box add precise64 http://dl.dropbox.com/u/1537815/precise64.box
+    vagrant box add precise64 http://files.vagrantup.com/precise64.box
     git clone https://github.com/farproc/CyanogenModBuildEnv.git
     cd CyanogenModBuildEnv
     vagrant up
