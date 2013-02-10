@@ -61,6 +61,16 @@ class prep-android-build {
         group => 'root',
     }
 
+    # android SDK (only really needed if you're 'extracting' the proprietary blobs directly from the device
+    exec { 'download and install android sdk':
+        command => 'mkdir -p /root/sdk && cd /root/sdk && wget http://dl.google.com/android/adt/adt-bundle-linux-x86_64.zip && unzip adt-bundle-linux-x86_64.zip',
+        require => Package['zip'],
+    }
+
+    exec { 'upload roots path':
+        command => 'echo export PATH="${PATH}:~/bin:/root/sdk/adt-bundle-linux-x86_64/sdk/platform-tools" >> /root/.bashrc'
+    }
+
     # repo init/sync:
     # repo init -u git://github.com/CyanogenMod/android.git -b cm-10.1
     # repo sync
