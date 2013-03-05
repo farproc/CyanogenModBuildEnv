@@ -1,29 +1,30 @@
 
 class prep-android-build {
     Exec {
-        path => [
+        path      => [
             '/usr/local/bin',
             '/opt/local/bin',
             '/usr/bin', 
             '/usr/sbin', 
             '/bin',
             '/sbin',
-            '/root/bin' ],
+            ],
         logoutput => false,
     }
 
     exec { "apt-get update":
-	command => "/usr/bin/apt-get update",
+	    command => "/usr/bin/apt-get update",
     }
 
     Package {
-        ensure => present,
+        ensure  => present,
         require => Exec['apt-get update'],
     }
 
     package { "build-essential": }
     package { "git-core": }
     package { "curl": }
+    package { "wget": }
     package { "gnupg": }
     package { "flex": }
     package { "bison": }
@@ -50,25 +51,32 @@ class prep-android-build {
     package { "libxml2-utils": }
 
     exec { 'install repo':
-        command => 'mkdir -p /root/bin && curl https://dl-ssl.google.com/dl/googlesource/git-repo/repo > /root/bin/repo && chmod u+x /root/bin/repo',
-        creates => '/root/bin/repo',
-        require => [ Package['curl'], Package['git-core'] ],
+        cwd     => '/usr/local/bin/',
+        command => 'bash -c "wget https://dl-ssl.google.com/dl/googlesource/git-repo/repo && chmod u+x repo"',
+        creates => '/usr/local/bin/repo',
+        require => [ Package['wget'], Package['git-core'] ],
     }
 
-    file { "/root/.gitconfig" :
-        source => "/vagrant/gitconfig",
-        owner => 'root',
-        group => 'root',
+    file { "/home/vagrant/.gitconfig" :
+        source  => "/vagrant/gitconfig",
+        owner   => 'vagrant',
+        group   => 'vagrant',
     }
 
     # android SDK (only really needed if you're 'extracting' the proprietary blobs directly from the device
     exec { 'download and install android sdk':
-        command => 'mkdir -p /root/sdk && cd /root/sdk && wget http://dl.google.com/android/adt/adt-bundle-linux-x86_64.zip && unzip adt-bundle-linux-x86_64.zip',
-        require => Package['zip'],
+        user    => 'vagrant',
+        cwd     => '/home/vagrant',
+        command => 'bash -c "mkdir -p sdk && cd sdk && wget http://dl.google.com/android/adt/adt-bundle-linux-x86_64-20130219.zip && unzip adt-bundle-linux-x86_64-20130219.zip"',
+        timeout => 600,
+        creates => '/home/vagrant/sdk/adt-bundle-linux-x86_64-20130219/sdk/platform-tools/adb',
+        require => [ Package['zip'], Package['wget'] ],
     }
 
-    exec { 'upload roots path':
-        command => 'echo export PATH="${PATH}:~/bin:/root/sdk/adt-bundle-linux-x86_64/sdk/platform-tools" >> /root/.bashrc'
+    exec { 'update path':
+        user    => 'vagrant',
+        cwd     => '/home/vagrant',
+        command => 'bash -c "echo export PATH=\"\${PATH}:~/sdk/adt-bundle-linux-x86_64-20130219/sdk/platform-tools\" >> .bashrc"',
     }
 
     # repo init/sync:
