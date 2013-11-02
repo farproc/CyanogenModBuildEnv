@@ -20,7 +20,7 @@ On the VM
 Then on the host
 
     adb devices # you should see your device
-    ssh -nNR127.0.0.1:5037:127.0.0.1:5037 -oExitOnForwardFailure=yes -p 2222 -i ~/.vagrant.d/insecure_private_key -l vagrant localhost # tunnels the adb server into the VM
+    vagrant ssh -- -nNR127.0.0.1:5037:127.0.0.1:5037
 
 Now back on the VM you should beable to exec ''adb'' commands :D
 
