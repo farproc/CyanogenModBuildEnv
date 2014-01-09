@@ -4,8 +4,8 @@ class prep-android-build {
         path      => [
             '/usr/local/bin',
             '/opt/local/bin',
-            '/usr/bin', 
-            '/usr/sbin', 
+            '/usr/bin',
+            '/usr/sbin',
             '/bin',
             '/sbin',
             ],
@@ -52,7 +52,7 @@ class prep-android-build {
 
     exec { 'install repo':
         cwd     => '/usr/local/bin/',
-        command => 'bash -c "wget https://dl-ssl.google.com/dl/googlesource/git-repo/repo && chmod u+x repo"',
+        command => 'bash -c "wget http://commondatastorage.googleapis.com/git-repo-downloads/repo && chmod u+x repo"',
         creates => '/usr/local/bin/repo',
         require => [ Package['wget'], Package['git-core'] ],
     }
@@ -67,16 +67,16 @@ class prep-android-build {
     exec { 'download and install android sdk':
         user    => 'vagrant',
         cwd     => '/home/vagrant',
-        command => 'bash -c "mkdir -p sdk && cd sdk && wget http://dl.google.com/android/adt/adt-bundle-linux-x86_64-20130219.zip && unzip adt-bundle-linux-x86_64-20130219.zip"',
+        command => 'bash -c "mkdir -p sdk && cd sdk && wget http://dl.google.com/android/adt/adt-bundle-linux-x86_64-20131030.zip && unzip adt-bundle-linux-x86_64-20131030.zip"',
         timeout => 600,
-        creates => '/home/vagrant/sdk/adt-bundle-linux-x86_64-20130219/sdk/platform-tools/adb',
+        creates => '/home/vagrant/sdk/adt-bundle-linux-x86_64-20131030/sdk/platform-tools/adb',
         require => [ Package['zip'], Package['wget'] ],
     }
 
     exec { 'update path':
         user    => 'vagrant',
         cwd     => '/home/vagrant',
-        command => 'bash -c "echo export PATH=\"\${PATH}:~/sdk/adt-bundle-linux-x86_64-20130219/sdk/platform-tools\" >> .bashrc"',
+        command => 'bash -c "echo export PATH=\"\${PATH}:~/sdk/adt-bundle-linux-x86_64-20131030/sdk/platform-tools\" >> .bashrc"',
     }
 
     # repo init/sync:
