@@ -52,7 +52,7 @@ class prep-android-build {
 
     exec { 'install repo':
         cwd     => '/usr/local/bin/',
-        command => 'bash -c "wget http://commondatastorage.googleapis.com/git-repo-downloads/repo && chmod u+x repo"',
+        command => 'bash -c "wget http://commondatastorage.googleapis.com/git-repo-downloads/repo && chmod a+x repo"',
         creates => '/usr/local/bin/repo',
         require => [ Package['wget'], Package['git-core'] ],
     }
